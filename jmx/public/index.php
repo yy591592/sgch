@@ -18,4 +18,4 @@ require __DIR__ . '/../thinkphp/base.php';
 //定义网站根目录
 define('APP_ROOT', dirname(__FILE__));
 //define("DOMAIN", "http://" . $_SERVER['HTTP_HOST']);
-Container::get('app')->run()->send();
+Container::get('app')->run()->send();1231;
