@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="06edc37a-0db0-4158-8e35-1a2830cba74f" name="gym" url="http://39.100.231.124">
+        <fileTransfer host="39.100.231.124" port="21">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" shareSSLContext="true" />
+          </advancedOptions>
+          <option name="port" value="21" />
+        </fileTransfer>
+      </webServer>
+      <webServer id="68a638ee-40f6-4d8c-a738-4cad445bb05a" name="mm" url="http://39.100.243.202">
+        <fileTransfer host="39.100.243.202" port="21">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" shareSSLContext="true" />
+          </advancedOptions>
+          <option name="port" value="21" />
+        </fileTransfer>
+      </webServer>
+      <webServer id="8558ab56-3f58-40ad-8fc5-507a25ce63ec" name="jmx" url="http://47.96.76.238">
+        <fileTransfer host="47.96.76.238" port="21">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" shareSSLContext="true" />
+          </advancedOptions>
+          <option name="port" value="21" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
