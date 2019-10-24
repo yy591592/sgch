@@ -1,0 +1,211 @@
+<form class="layui-form layui-card">
+    <input type="hidden" name="id" value="{$data.id ?? ''}">
+    <div class="layui-card-body">
+        <div class="layui-form-item">
+            <label class="layui-form-label">教练名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="name" lay-verify="name" autocomplete="off"
+                       placeholder="请输入教练名称"
+                       class="layui-input" value="{$data.name}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">教练QQ</label>
+            <div class="layui-input-block">
+                <input type="text" name="qq" autocomplete="off"
+                       placeholder="请输入教练QQ"
+                       class="layui-input" value="{$data.qq}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">教练微信</label>
+            <div class="layui-input-block">
+                <input type="text" name="wechat" autocomplete="off"
+                       placeholder="请输入教练微信"
+                       class="layui-input" value="{$data.wechat}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">教练手机号码</label>
+            <div class="layui-input-block">
+                <input type="text" name="tel" lay-verify="required|phone" autocomplete="off"
+                       placeholder="请输入教练电话"
+                       class="layui-input" value="{$data.tel}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">教练邮箱</label>
+            <div class="layui-input-block">
+                <input type="text" name="email" autocomplete="off"
+                       placeholder="请输入教练名称"
+                       class="layui-input" value="{$data.email}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">教练头像</label>
+            <input type="hidden" name="avartar" lay-verify="avartar" id="avartar" value="{$data.avartar ?? ''}">
+            <div class="layui-input-block">
+                <div class="layui-upload">
+                    <button type="button" class="layui-btn layui-btn-primary" id="cateBtn"><i
+                            class="icon icon-upload3"></i>点击上传
+                    </button>
+                    <div class="layui-upload-list">
+                        <img class="layui-upload-img" id="cateImage" src="{$data.avartar ?? ''}" style="width:80px;">
+                        <p id="demoText"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">教练图集</label>
+            <div class="layui-input-block">
+                <div class="layui-upload">
+                    <button type="button" class="layui-btn layui-btn-primary" id="imagess"><i
+                            class="icon icon-upload3"></i>点击上传
+                    </button>
+                    <div class="layui-upload-list">
+                        <span id="img">
+                            {notempty  name="$data['images']"}
+                            {foreach $data['images'] as $key=>$value}
+                            <span style="display:inline-block;position:relative;margin-right: 20px;">
+                                <a onclick="$(this).parent().remove()"
+                                   style="padding:1px 2px ;background:#f7f7f7;position: absolute;right:0;top:0px;cursor: pointer;">
+                                    X</a>
+                                <input class="images" type="hidden" name="images[{$key}]" value="{$value ?? ''}">
+                                <img class="layui-upload-img" src="{$value ?? ''}" style="height:65px">
+                            </span>
+                            {/foreach}
+                            {/notempty}
+                        </span>
+                        <p id="demoText1"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">教练介绍</label>
+            <div class="layui-input-block">
+                <textarea placeholder="请输入教练介绍" lay-verify="introduce" class="layui-textarea"
+                          name="introduce">{$data.introduce|default=""}</textarea>
+            </div>
+        </div>
+    </div>
+    <div class="hr-line-dashed"></div>
+    <div class="layui-form-item text-center">
+        <button class="layui-btn" type='button' lay-submit="" lay-filter="submit">保存数据</button>
+        <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定要取消编辑吗？" data-close>取消编辑</button>
+    </div>
+    <script>window.form.render();</script>
+</form>
+<script>
+    layui.config({
+        base: "__ROOT__/static/plugs/layui/lay/mymodules/"
+    }).use(['form', 'layer', 'eleTree', 'upload'], function () {
+        var form = layui.form
+            , layer = layui.layer, upload = layui.upload;
+        var eleTree = layui.eleTree;
+        var uploadInst = upload.render({
+            elem: '#cateBtn',
+            url: '{:url("upload/upload")}',
+            done: function (res) {
+                if (res.code > 0) {
+                    $('#avartar').val(res.url);
+                    $('#cateImage').attr('src', res.url);
+                } else {
+                    //如果上传失败
+                    return layer.msg('上传失败');
+                }
+            },
+            error: function () {
+                //演示失败状态，并实现重传
+                var demoText = $('#demoText');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function () {
+                    uploadInst.upload();
+                });
+            }
+        });
+        //缩略图集上传
+        var uploadInst = upload.render({
+            elem: '#imagess'
+            , multiple: true
+            , url: '{:url("upload/upload")}',
+            done: function (res) {
+                if (res.code > 0) {
+                    var img = '';
+                    img += '<span style="display:inline-block;position:relative;margin-right: 20px;">';
+                    img += '<a onclick="$(this).parent().remove()" style="padding:1px 2px ;background:#f7f7f7;position: absolute;right:0;top:0px;cursor: pointer;">X</a>';
+                    img += '<input class="images" type="hidden" name="images[' + res.index + ']" value="' + res.url + '">';
+                    img += '<img class="layui-upload-img" src="' + res.url + '" style=" height:65px"></span>';
+                    $('#img').append(img);
+                } else {
+                    //如果上传失败
+                    return layer.msg("上传失败：" + res.info);
+                }
+            },
+            error: function () {
+                //演示失败状态，并实现重传
+                var demoText = $('#demoText1');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function () {
+                    uploadInst.upload();
+                });
+            }
+        });
+        //自定义验证规则
+        form.verify({
+            name: function (value) {
+                if (!value) {
+                    return '教练名称不能为空';
+                }
+            },
+            avartar: function (value) {
+                if (!value) {
+                    return "教练头像必须上传";
+                }
+            },
+            introduce: function (value) {
+                if (!value) {
+                    return "教练介绍不能为空"
+                }
+            }
+        });
+        form.on('submit(submit)', function (data) {
+            var loading = layer.load(1, {shade: [0.1, '#fff']});
+            $.post("{:url('edit')}", data.field, function (res) {
+                layer.close(loading);
+                if (res.status == 'success') {
+                    layer.msg(res.msg, {time: 1800, icon: 1}, function () {
+                        //关闭当前frame
+                        location.reload()
+                    });
+                } else {
+                    layer.msg(res.msg, {time: 1800, icon: 2});
+                }
+            });
+        });
+        var el5;
+        $("[name='title']").on("click", function (e) {
+            e.stopPropagation();
+            if (!el5) {
+                el5 = eleTree.render({
+                    elem: '.ele5',
+                    url: "{:url('getCategoryTreeList')}",
+                    defaultExpandAll: true,
+                    expandOnClickNode: false,
+                    highlightCurrent: true
+                });
+            }
+            $(".ele5").toggle();
+        })
+        eleTree.on("nodeClick(data5)", function (d) {
+            $("[name='title']").val(d.data.currentData.label)
+            $("[name='pid']").val(d.data.currentData.id)
+            $(".ele5").hide();
+        })
+        $(document).on("click", function () {
+            $(".ele5").hide();
+        })
+
+    });
+</script>

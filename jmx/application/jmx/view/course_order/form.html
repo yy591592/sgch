@@ -1,0 +1,302 @@
+<style>
+    .eleTree {
+        width: 350px;
+        height: 500px;
+        border: 1px solid #ccc;
+        overflow: hidden;
+        display: inline-block;
+    }
+
+    a:hover {
+        color: #01AAED;
+    }
+
+    .mode, .cate {
+        height: auto;
+        width: 100%;
+        display: none;
+        position: absolute;
+        top: 100%;
+        background-color: #fff;
+        z-index: 100;
+    }
+</style>
+<form class="layui-form layui-card">
+    <input type="hidden" name="id" value="{$data.id ?? ''}">
+    <div class="layui-card-body">
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="uid" lay-verify="required" autocomplete="off"
+                       placeholder="请输入用户名称" readonly
+                       class="layui-input" value="{$data.uid ?? ''}">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">课程名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="course_id" lay-verify="required" autocomplete="off"
+                       placeholder="请输入课程名称" readonly
+                       class="layui-input" value="{$data.course_id ?? ''}">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">代金券</label>
+            <div class="layui-input-block">
+                <input type="text" name="vouchers_id" lay-verify="required" autocomplete="off" readonly
+                       class="layui-input" value="{$data.vouchers_id ?? ''}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">订单号</label>
+            <div class="layui-input-block">
+                <input type="text" name="order_number" lay-verify="required" autocomplete="off" readonly
+                       class="layui-input" value="{$data.order_number ?? ''}">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">预约天数</label>
+            <div class="layui-input-block">
+                <input type="text" name="day_number" lay-verify="required" autocomplete="off" readonly
+                       class="layui-input" value="{$data.day_number ?? ''}">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">预约人数</label>
+            <div class="layui-input-block">
+                <input type="text" name="people_number" lay-verify="required" autocomplete="off" readonly
+                       class="layui-input" value="{$data.people_number ?? ''}">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">课程节数</label>
+            <div class="layui-input-block">
+                <input type="text" name="node_number" lay-verify="required" autocomplete="off" readonly
+                       class="layui-input" value="{$data.node_number ?? ''}">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">支付金额</label>
+            <div class="layui-input-block">
+                <input type="text" name="price" lay-verify="required|number" autocomplete="off" readonly
+                       class="layui-input" value="{$data.price ?? ''}">
+            </div>
+        </div>
+
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">是否会员卡支付</label>
+            <div class="layui-input-block">
+                <input type="checkbox" name="is_member_pay" {if 1==$data.is_member_pay}checked{/if}
+                       readonly lay-skin="switch" lay-text="ON|OFF" >
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">日期</label>
+            <div class="layui-input-inline">
+                <input type="text" name="date" class="layui-input" id="test1"
+                       placeholder="Y-M-D" readonly
+                       value="{$data.date ?? 'Y-M-D'}">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">订单生成时间</label>
+            <div class="layui-input-inline">
+                <input type="text" name="createtime" class="layui-input" id="test2"
+                       placeholder="Y-M-D H:m:s" readonly
+                       value="{$data.createtime ?? 'Y-M-D H:m:s'}">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">订单支付时间</label>
+            <div class="layui-input-inline">
+                <input type="text" name="paytime" class="layui-input" id="test3"
+                       placeholder="Y-M-D H:m:s" readonly
+                       value="{$data.paytime ?? 'Y-M-D H:m:s'}">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">支付状态</label>
+            <div class="layui-input-block">
+                <input type="radio" name="pay_status" readonly value="0" title="未支付" {if $data.pay_status == '未支付'} checked {/if} >
+                <input type="radio" name="pay_status"  readonly value="1" title="已支付" {if $data.pay_status == '已支付'} checked {/if} >
+            </div>
+        </div>
+
+        {if $data.receiver}
+        <div class="layui-form-item">
+            <label class="layui-form-label">是否赠送</label>
+            <div class="layui-input-block">
+                <input type="radio" name="is_give" readonly value="0" title="未赠送" {if $data.is_give == '0'} checked {/if} >
+                <input type="radio" name="is_give"  readonly value="1" title="已赠送" {if $data.is_give == '1'} checked {/if} >
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">领取人</label>
+            <div class="layui-input-block">
+                <input type="text" name="receiver" lay-verify="required" autocomplete="off"
+                        readonly
+                       class="layui-input" value="{$data.receiver ?? ''}">
+            </div>
+        </div>
+        {/if}
+
+
+    </div>
+    <div class="hr-line-dashed"></div>
+    <div class="layui-form-item text-center">
+        <button class="layui-btn layui-btn-danger" type='button' data-close>取消</button>
+    </div>
+    <script>window.form.render();</script>
+</form>
+<div id="uploadLoadingDiv" style="display: none;">
+    <div class="layui-progress" lay-showpercent="true" lay-filter="js_upload_progress" style="margin: 10px;">
+        <div class="layui-progress-bar layui-bg-red" lay-percent="0%"></div>
+    </div>
+    <div class="layui-form-item" style="text-align: center">
+        <button class="layui-btn layui-btn-normal js_upload_progress_bar_sure">确定</button>
+    </div>
+</div>
+<script>
+    layui.config({
+        base: "__ROOT__/static/plugs/layui/lay/mymodules/"
+    }).use(['form', 'layer', 'eleTree', 'upload', 'element','laydate'], function () {
+        var form = layui.form
+            , layer = layui.layer, upload = layui.upload,element = layui.element, laydate = layui.laydate;
+        var eleTree = layui.eleTree;
+        element.init();
+
+        laydate.render({
+            elem: '#date',
+        });
+
+        laydate.render({
+            elem: '#test2'
+            ,type: 'datetime'
+        });
+        laydate.render({
+            elem: '#test3'
+            ,type: 'datetime'
+        });
+
+        //创建监听函数
+        var xhrOnProgress = function (fun) {
+            xhrOnProgress.onprogress = fun; //绑定监听
+            //使用闭包实现监听绑
+            return function () {
+                //通过$.ajaxSettings.xhr();获得XMLHttpRequest对象
+                var xhr = $.ajaxSettings.xhr();
+                //判断监听函数是否为函数
+                if (typeof xhrOnProgress.onprogress !== 'function')
+                    return xhr;
+                //如果有监听函数并且xhr对象支持绑定时就把监听函数绑定上去
+                if (xhrOnProgress.onprogress && xhr.upload) {
+                    xhr.upload.onprogress = xhrOnProgress.onprogress;
+                }
+                return xhr;
+            }
+        }
+        laydate.render({
+            elem: '#test1' //指定元素
+        });
+        //缩略图集上传
+        var uploadInst = upload.render({
+            elem: '#imagess'
+            , multiple: true
+            , url: '{:url("upload/upload")}',
+            done: function (res) {
+                if (res.code > 0) {
+                    var img = '';
+                    img += '<span style="display:inline-block;position:relative;margin-right: 20px;">';
+                    img += '<a onclick="$(this).parent().remove()" style="padding:1px 2px ;background:#f7f7f7;position: absolute;right:0;top:0px;cursor: pointer;">X</a>';
+                    img += '<input class="images" type="hidden" name="images[' + res.index + ']" value="' + res.url + '">';
+                    img += '<img class="layui-upload-img" src="' + res.url + '" style=" height:65px"></span>';
+                    $('#img').append(img);
+                } else {
+                    //如果上传失败
+                    return layer.msg("上传失败：" + res.info);
+                }
+            },
+            error: function () {
+                //演示失败状态，并实现重传
+                var demoText = $('#demoText1');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function () {
+                    uploadInst.upload();
+                });
+            }
+        });
+        //自定义验证规则
+
+        form.on('submit(submit)', function (data) {
+            var loading = layer.load(1, {shade: [0.1, '#fff']});
+            $.post("{:url('edit')}", data.field, function (res) {
+                layer.close(loading);
+                if (res.status == 'success') {
+                    layer.msg(res.msg, {time: 1800, icon: 1}, function () {
+                        //关闭当前frame
+                        location.reload()
+                    });
+                } else {
+                    layer.msg(res.msg, {time: 1800, icon: 2});
+                }
+            });
+        });
+        var mode;
+        $("[name='mode_title']").on("click", function (e) {
+            e.stopPropagation();
+            if (!mode) {
+                mode = eleTree.render({
+                    elem: '.mode',
+                    url: "{:url('category/getCategoryTreeList')}?pid=20",
+                    defaultExpandAll: true,
+                    expandOnClickNode: false,
+                    highlightCurrent: true
+                });
+            }
+            $(".mode").toggle();
+        })
+        eleTree.on("nodeClick(data1)", function (d) {
+            $("[name='mode_title']").val(d.data.currentData.label)
+            $("[name='modeid']").val(d.data.currentData.id)
+            $(".mode").hide();
+        })
+        $(document).on("click", function () {
+            $(".mode").hide();
+        })
+        var cate;
+        $("[name='cate_title']").on("click", function (e) {
+            e.stopPropagation();
+            if (!cate) {
+                cate = eleTree.render({
+                    elem: '.cate',
+                    url: "{:url('category/getCategoryTreeList')}?pid=21",
+                    defaultExpandAll: true,
+                    expandOnClickNode: false,
+                    highlightCurrent: true
+                });
+            }
+            $(".cate").toggle();
+        })
+        eleTree.on("nodeClick(data2)", function (d) {
+            $("[name='cate_title']").val(d.data.currentData.label)
+            $("[name='cateid']").val(d.data.currentData.id)
+            $(".cate").hide();
+        })
+        $(document).on("click", function () {
+            $(".cate").hide();
+        })
+    });
+</script>

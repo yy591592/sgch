@@ -1,0 +1,105 @@
+<form class="layui-form layui-card">
+    <input type="hidden" name="id" value="{$data.id ?? ''}">
+    <div class="layui-card-body">
+
+
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label label-required-next">类型</label>
+                <div class="layui-input-inline">
+                    <select name="type" lay-verify="week">
+                        <option value="">请选择类型</option>
+                        <option value="1" {if $data.type=='帮代购'}selected{/if}>帮代购</option>
+                        <option value="2" {if $data.type=='帮取送'}selected{/if}>帮取送</option>
+                        <option value="3" {if $data.type=='帮排队'}selected{/if}>帮排队</option>
+                        <option value="4" {if $data.type=='万能跑腿'}selected{/if}>万能跑腿</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label label-required-next">分类</label>
+                <div class="layui-input-inline">
+                    <select name="cid" lay-verify="week">
+                        <option value="">请选择分类</option>
+                        {foreach name="type" id="vo"}
+                        <option value="{$vo.id}" {if $vo.id== $data.cid}selected{/if}>{$vo.name}</option>
+                        {/foreach}
+
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="title"   autocomplete="off"
+                       placeholder="请输入名称"
+                       class="layui-input" value="{$data.title}">
+            </div>
+        </div>
+
+
+
+
+    </div>
+    <div class="hr-line-dashed"></div>
+    <div class="layui-form-item text-center">
+        <button class="layui-btn" type='button' lay-submit="" lay-filter="submit">保存数据</button>
+        <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定要取消编辑吗？" data-close>取消编辑</button>
+    </div>
+    <script>window.form.render();</script>
+</form>
+<script>
+    layui.config({
+        base: "__ROOT__/static/plugs/layui/lay/mymodules/"
+    }).use(['form', 'layer', 'eleTree', 'upload'], function () {
+        var form = layui.form
+            , layer = layui.layer, upload = layui.upload;
+        var eleTree = layui.eleTree;
+        var uploadInst = upload.render({
+            elem: '#cateBtn',
+            url: '{:url("upload/upload")}',
+            done: function (res) {
+                if (res.code > 0) {
+                    $('#cover_image').val(res.url);
+                    $('#cateImage').attr('src', res.url);
+                } else {
+                    //如果上传失败
+                    return layer.msg('上传失败');
+                }
+            },
+            error: function () {
+                //演示失败状态，并实现重传
+                var demoText = $('#demoText');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function () {
+                    uploadInst.upload();
+                });
+            }
+        });
+
+
+        form.on('submit(submit)', function (data) {
+            var loading = layer.load(1, {shade: [0.1, '#fff']});
+            $.post("{:url('edit')}", data.field, function (res) {
+                layer.close(loading);
+                if (res.status == 'success') {
+                    layer.msg(res.msg, {time: 1800, icon: 1}, function () {
+                        //关闭当前frame
+                        location.reload()
+                    });
+                } else {
+                    layer.msg(res.msg, {time: 1800, icon: 2});
+                }
+            });
+        });
+
+
+    });
+</script>

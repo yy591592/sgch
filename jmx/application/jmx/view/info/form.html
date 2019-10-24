@@ -1,0 +1,90 @@
+<form class="layui-form layui-card">
+    <input type="hidden" name="id" value="{$data.id ?? ''}">
+    <div class="layui-card-body">
+
+        <div class="layui-form-item">
+            <label class="layui-form-label label-required-next">标题</label>
+            <div class="layui-input-block">
+                <input type="text" name="name" lay-verify="title" autocomplete="off"
+                       placeholder="请输入标题"
+                       class="layui-input" value="{$data.name ?? ''}">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">内容详情</label>
+            <div class="layui-input-block">
+                <textarea placeholder="请输入内容详情" name="content" id="content"
+                          class="layui-textarea" lay-verify="content">{$data.content|default=""}</textarea>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="hr-line-dashed"></div>
+    <div class="layui-form-item text-center">
+        <button class="layui-btn" type='button' lay-submit="" lay-filter="submit">保存数据</button>
+        <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定要取消编辑吗？" data-close>取消编辑</button>
+    </div>
+    <script>window.form.render();</script>
+</form>
+<script>
+    layui.config({
+        base: "__ROOT__/static/plugs/layui/lay/mymodules/"
+    }).use(['form', 'layer', 'eleTree', 'upload', 'layedit'], function () {
+        var form = layui.form
+            , layer = layui.layer, upload = layui.upload;
+        var eleTree = layui.eleTree;
+
+        var layedit = layui.layedit;
+        var index = layedit.build('content'); //建立编辑器
+
+        var uploadInst = upload.render({
+            elem: '#cateBtn',
+            url: '{:url("upload/upload")}',
+            done: function (res) {
+                if (res.code > 0) {
+                    $('#images').val(res.url);
+                    $('#cateImage').attr('src', res.url);
+                } else {
+                    //如果上传失败
+                    return layer.msg('上传失败');
+                }
+            },
+            error: function () {
+                //演示失败状态，并实现重传
+                var demoText = $('#demoText');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function () {
+                    uploadInst.upload();
+                });
+            }
+        });
+
+        //自定义验证规则
+        form.verify({
+
+            content: function (value) {
+                layedit.sync(index);
+            }
+        });
+
+
+        form.on('submit(submit)', function (data) {
+            var loading = layer.load(1, {shade: [0.1, '#fff']});
+            $.post("{:url('edit')}", data.field, function (res) {
+                layer.close(loading);
+                if (res.status == 'success') {
+                    layer.msg(res.msg, {time: 1800, icon: 1}, function () {
+                        //关闭当前frame
+                        location.reload()
+                    });
+                } else {
+                    layer.msg(res.msg, {time: 1800, icon: 2});
+                }
+            });
+        });
+
+
+    });
+</script>

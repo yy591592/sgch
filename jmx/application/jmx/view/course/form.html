@@ -1,0 +1,474 @@
+<style>
+    .eleTree {
+        width: 350px;
+        height: 500px;
+        border: 1px solid #ccc;
+        overflow: hidden;
+        display: inline-block;
+    }
+
+    a:hover {
+        color: #01AAED;
+    }
+
+    .mode, .cate {
+        height: auto;
+        width: 100%;
+        display: none;
+        position: absolute;
+        top: 100%;
+        background-color: #fff;
+        z-index: 100;
+    }
+</style>
+<form class="layui-form layui-card">
+    <input type="hidden" name="id" value="{$data.id ?? ''}">
+    <div class="layui-card-body">
+        <div class="layui-form-item">
+            <label class="layui-form-label label-required-next">训练模式</label>
+
+            <div class="layui-input-block">
+                <input type="text" name="mode_title" placeholder="训练模式" readonly="" autocomplete="off"
+                       class="layui-input" value="{$data.mode_title ?? ''}">
+                <input type="hidden" name="modeid" lay-verify="modeid" value="{$data.modeid ?? ''}">
+                <div class="eleTree mode" lay-filter="data1"></div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label label-required-next">训练类型</label>
+            <div class="layui-input-block">
+                <input type="text" name="cate_title" placeholder="训练类型" readonly="" autocomplete="off"
+                       class="layui-input" value="{$data.cate_title ?? ''}">
+                <input type="hidden" name="cateid" lay-verify="cateid" value="{$data.cateid ?? ''}">
+                <div class="eleTree cate" lay-filter="data2"></div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label label-required-next">课程时段</label>
+                <div class="layui-input-inline">
+                    <select name="timesid" lay-verify="timesid">
+                        <option value="">请选择课程时段</option>
+
+                        {volist name="times" id="vo"}
+                        <option value="{$vo.id}" {if $vo.id== $data.timesid}selected{/if}>
+                        {$vo.starttime}-{$vo.endtime}</option>
+                        {/volist}
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label label-required-next">课程名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="title" lay-verify="required" autocomplete="off"
+                       placeholder="请输入课程名称"
+                       class="layui-input" value="{$data.title ?? ''}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">课程英文名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="english_title" lay-verify="required" autocomplete="off"
+                       placeholder="请输入课程英文名称"
+                       class="layui-input" value="{$data.english_title ?? ''}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label label-required-next">授课教练</label>
+            <div class="layui-input-block">
+                <select name="coach_id" lay-verify="coach_id" lay-filter="coach_id">
+                    <option value=""></option>
+                    {volist name="coach" id="vo"}
+                    <option value="{$vo.id}" {if $vo.id== $data.coach_id}selected{/if}>{$vo.name}</option>
+                    {/volist}
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label label-required-next">课程名额</label>
+            <div class="layui-input-block">
+                <input type="text" name="quota" lay-verify="required|number" autocomplete="off"
+                       placeholder="请输入课程名额"
+                       class="layui-input" value="{$data.quota ?? ''}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label label-required-next">课程单价</label>
+            <div class="layui-input-block">
+                <input type="text" name="price" lay-verify="required|number" autocomplete="off"
+                       placeholder="请输入课程单价"
+                       class="layui-input" value="{$data.price ?? ''}">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">是否免费</label>
+            <div class="layui-input-block">
+                <input type="checkbox" name="is_price" {if 0==$data.is_price}checked{/if} lay-skin="switch"
+                       lay-text="ON|OFF">
+            </div>
+        </div>
+
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">满足优惠人数</label>
+            <div class="layui-input-inline">
+                <input type="text" name="people_number" autocomplete="off"
+                       placeholder="请输入满足优惠人数,选填"
+                       class="layui-input" value="{$data.people_number ?? ''}">
+            </div>
+            <label class="layui-form-label">优惠之后价格</label>
+            <div class="layui-input-inline">
+                <input type="text" name="discount_price" autocomplete="off"
+                       placeholder="请输入优惠之后价格，选填"
+                       class="layui-input" value="{$data.discount_price ?? ''}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label label-required-next">会员折扣</label>
+            <div class="layui-input-block">
+                <input type="text" name="member_discount" autocomplete="off"
+                       placeholder="请输入会员折扣"
+                       lay-verify="required|number"
+                       class="layui-input" value="{$data.member_discount ?? ''}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label label-required-next">课程周时间</label>
+                <div class="layui-input-inline">
+                    <select name="week" lay-verify="week">
+                        <option value="">请选择课程时间</option>
+                        <option value="0" {if $data.week== 0}selected{/if}>周一</option>
+                        <option value="1" {if $data.week== 1}selected{/if}>周二</option>
+                        <option value="2" {if $data.week== 2}selected{/if}>周三</option>
+                        <option value="3" {if $data.week== 3}selected{/if}>周四</option>
+                        <option value="4" {if $data.week== 4}selected{/if}>周五</option>
+                        <option value="5" {if $data.week== 5}selected{/if}>周六</option>
+                        <option value="6" {if $data.week== 6}selected{/if}>周日</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="layui-inline">
+                <label class="layui-form-label label-required-next">课程时间</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="time" class="layui-input" lay-verify="times" id="test"
+                           placeholder="00:00:00-00:00:00"
+                           value="{$data.starttime ?? '00:00:00'} - {$data.endtime ?? '00:00:00'}">
+                </div>
+            </div>
+
+
+
+
+
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">课程视频</label>
+            <input type="hidden" name="video_url" lay-verify="video_url" id="video_url" value="{$data.video_url ?? ''}">
+            <div class="layui-input-block">
+                <div class="layui-upload">
+                    <button type="button" class="layui-btn layui-btn-primary" id="cateBtn"><i
+                            class="icon icon-upload3"></i>点击上传
+                    </button>
+                    <!--<div class="layui-upload-list" id="video">-->
+                    <!--</div>-->
+                    <p id="demoText"></p>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">课程图集</label>
+            <div class="layui-input-block">
+                <div class="layui-upload">
+                    <button type="button" class="layui-btn layui-btn-primary" id="imagess"><i
+                            class="icon icon-upload3"></i>点击上传
+                    </button>
+                    <div class="layui-upload-list">
+                        <span id="img">
+                            {notempty  name="$data['images']"}
+                            {foreach $data['images'] as $key=>$value}
+                            <span style="display:inline-block;position:relative;margin-right: 20px;">
+                                <a onclick="$(this).parent().remove()"
+                                   style="padding:1px 2px ;background:#f7f7f7;position: absolute;right:0;top:0px;cursor: pointer;">
+                                    X</a>
+                                <input class="images" type="hidden" name="images[{$key}]" value="{$value ?? ''}">
+                                <img class="layui-upload-img" src="{$value ?? ''}" style="height:65px">
+                            </span>
+                            {/foreach}
+                            {/notempty}
+                        </span>
+                        <p id="demoText1"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label label-required-next">训练效果</label>
+            <div class="layui-input-block">
+                <textarea placeholder="请输入训练效果" class="layui-textarea"
+                          name="effect" lay-verify="effect">{$data.effect|default=""}</textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label label-required-next">适合人群</label>
+            <div class="layui-input-block">
+                <textarea placeholder="请输入适合人群" class="layui-textarea"
+                          name="crowd" lay-verify="crowd">{$data.crowd|default=""}</textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label label-required-next">注意事项</label>
+            <div class="layui-input-block">
+                <textarea placeholder="请输入注意事项" class="layui-textarea"
+                          name="note" lay-verify="note">{$data.crowd|default=""}</textarea>
+            </div>
+        </div>
+
+    </div>
+    <div class="hr-line-dashed"></div>
+    <div class="layui-form-item text-center">
+        <button class="layui-btn" type='button' lay-submit="" lay-filter="submit">保存数据</button>
+        <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定要取消编辑吗？" data-close>取消编辑</button>
+    </div>
+    <script>window.form.render();</script>
+</form>
+<div id="uploadLoadingDiv" style="display: none;">
+    <div class="layui-progress" lay-showpercent="true" lay-filter="js_upload_progress" style="margin: 10px;">
+        <div class="layui-progress-bar layui-bg-red" lay-percent="0%"></div>
+    </div>
+    <div class="layui-form-item" style="text-align: center">
+        <button class="layui-btn layui-btn-normal js_upload_progress_bar_sure">确定</button>
+    </div>
+</div>
+<script>
+    layui.config({
+        base: "__ROOT__/static/plugs/layui/lay/mymodules/"
+    }).use(['form', 'layer', 'eleTree', 'upload', 'element', 'laydate'], function () {
+        var form = layui.form
+            , layer = layui.layer, upload = layui.upload, element = layui.element, laydate = layui.laydate;
+        var eleTree = layui.eleTree;
+        element.init();
+        laydate.render({
+            elem: '#date',
+        });
+
+
+
+        laydate.render({
+            elem: '#test'
+            ,type: 'time'
+            ,range: true //或 range: '~' 来自定义分割字符
+        });
+
+
+
+        //创建监听函数
+        var xhrOnProgress = function (fun) {
+            xhrOnProgress.onprogress = fun; //绑定监听
+            //使用闭包实现监听绑
+            return function () {
+                //通过$.ajaxSettings.xhr();获得XMLHttpRequest对象
+                var xhr = $.ajaxSettings.xhr();
+                //判断监听函数是否为函数
+                if (typeof xhrOnProgress.onprogress !== 'function')
+                    return xhr;
+                //如果有监听函数并且xhr对象支持绑定时就把监听函数绑定上去
+                if (xhrOnProgress.onprogress && xhr.upload) {
+                    xhr.upload.onprogress = xhrOnProgress.onprogress;
+                }
+                return xhr;
+            }
+        }
+        var uploadInst = upload.render({
+            elem: '#cateBtn',
+            url: '{:url("upload/video")}',
+            accept: 'video', //视频
+            before: function () {
+                element.progress('js_upload_progress', '0%');//设置页面进度条
+                layer.open({
+                    type: 1,
+                    title: '上传进度',
+                    closeBtn: 1, //不显示关闭按钮
+                    area: ['300px', '170px'],
+                    shadeClose: false, //开启遮罩关闭
+                    content: $("#uploadLoadingDiv").html(),
+                    offset: '100px'
+                });
+            },
+            xhr: xhrOnProgress,
+            progress: function (value) {
+                element.progress('js_upload_progress', value + '%');//设置页面进度条
+            },
+            done: function (res) {
+                if (res.code > 0) {
+                    $('#video_url').val(res.url);
+                    var demoText = $('#demoText');
+                    demoText.html('<span style="color: #FF5722;">上传成功</span>');
+                    demoText.find('.demo-reload').on('click', function () {
+                        uploadInst.upload();
+                    });
+                } else {
+                    //如果上传失败
+                    return layer.msg('上传失败');
+                }
+            },
+            error: function () {
+                //演示失败状态，并实现重传
+                var demoText = $('#demoText');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function () {
+                    uploadInst.upload();
+                });
+            }
+        });
+        //缩略图集上传
+        var uploadInst = upload.render({
+            elem: '#imagess'
+            , multiple: true
+            , url: '{:url("upload/upload")}',
+            done: function (res) {
+                if (res.code > 0) {
+                    var img = '';
+                    img += '<span style="display:inline-block;position:relative;margin-right: 20px;">';
+                    img += '<a onclick="$(this).parent().remove()" style="padding:1px 2px ;background:#f7f7f7;position: absolute;right:0;top:0px;cursor: pointer;">X</a>';
+                    img += '<input class="images" type="hidden" name="images[' + res.index + ']" value="' + res.url + '">';
+                    img += '<img class="layui-upload-img" src="' + res.url + '" style=" height:65px"></span>';
+                    $('#img').append(img);
+                } else {
+                    //如果上传失败
+                    return layer.msg("上传失败：" + res.info);
+                }
+            },
+            error: function () {
+                //演示失败状态，并实现重传
+                var demoText = $('#demoText1');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function () {
+                    uploadInst.upload();
+                });
+            }
+        });
+        //自定义验证规则
+        form.verify({
+            modeid: function (value) {
+                if (!value) {
+                    return '训练模式必须选择';
+                }
+            },
+            cateid: function (value) {
+                if (!value) {
+                    return '训练类型必须选择';
+                }
+            },
+            timesid: function (value) {
+                if (!value) {
+                    return '课程时段必须选择';
+                }
+            },
+            title: function (value) {
+                if (!value) {
+                    return '课程名称不能为空';
+                }
+            },
+            coach_id: function (value) {
+                if (!value) {
+                    return '授课教练必须选择';
+                }
+            },
+            week: function (value) {
+                if (!value) {
+                    return '课程周时间必须选择';
+                }
+            },
+            times: function (value) {
+                if (!value) {
+                    return '课程时间必须选择';
+                }
+            },
+            images: function (value) {
+                if (!value) {
+                    return '课程图集必须上传';
+                }
+            },
+            effect: function (value) {
+                if (!value) {
+                    return '训练效果不能为空';
+                }
+            },
+            crowd: function (value) {
+                if (!value) {
+                    return '适合人群不能为空';
+                }
+            },
+            note: function (value) {
+                if (!value) {
+                    return '注意事项不能为空';
+                }
+            }
+        });
+        form.on('submit(submit)', function (data) {
+            var loading = layer.load(1, {shade: [0.1, '#fff']});
+            $.post("{:url('edit')}", data.field, function (res) {
+                layer.close(loading);
+                if (res.status == 'success') {
+                    layer.msg(res.msg, {time: 1800, icon: 1}, function () {
+                        //关闭当前frame
+                        location.reload()
+                    });
+                } else {
+                    layer.msg(res.msg, {time: 1800, icon: 2});
+                }
+            });
+        });
+        var mode;
+        $("[name='mode_title']").on("click", function (e) {
+            e.stopPropagation();
+            if (!mode) {
+                mode = eleTree.render({
+                    elem: '.mode',
+                    url: "{:url('category/getCategoryTreeList')}?pid=20",
+                    defaultExpandAll: true,
+                    expandOnClickNode: false,
+                    highlightCurrent: true
+                });
+            }
+            $(".mode").toggle();
+        })
+        eleTree.on("nodeClick(data1)", function (d) {
+            $("[name='mode_title']").val(d.data.currentData.label)
+            $("[name='modeid']").val(d.data.currentData.id)
+            $(".mode").hide();
+        })
+        $(document).on("click", function () {
+            $(".mode").hide();
+        })
+        var cate;
+        $("[name='cate_title']").on("click", function (e) {
+            e.stopPropagation();
+            if (!cate) {
+                cate = eleTree.render({
+                    elem: '.cate',
+                    url: "{:url('category/getCategoryTreeList')}?pid=21",
+                    defaultExpandAll: true,
+                    expandOnClickNode: false,
+                    highlightCurrent: true
+                });
+            }
+            $(".cate").toggle();
+        })
+        eleTree.on("nodeClick(data2)", function (d) {
+            $("[name='cate_title']").val(d.data.currentData.label)
+            $("[name='cateid']").val(d.data.currentData.id)
+            $(".cate").hide();
+        })
+        $(document).on("click", function () {
+            $(".cate").hide();
+        })
+    });
+</script>

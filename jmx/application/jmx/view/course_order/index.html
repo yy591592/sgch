@@ -1,0 +1,195 @@
+{extend name='admin@main'}
+{block name="style"}
+<style>
+    .eleTree {
+        width: 350px;
+        height: 500px;
+        border: 1px solid #ccc;
+        overflow: hidden;
+        display: inline-block;
+    }
+
+    a:hover {
+        color: #01AAED;
+    }
+
+    .mode1, .cate1 {
+        height: auto;
+        width: 100%;
+        display: none;
+        position: absolute;
+        top: 100%;
+        background-color: #fff;
+        z-index: 999;
+    }
+</style>
+{/block}
+{block name="content"}
+<div class="think-box-shadow">
+    <fieldset class="demoTable">
+        <legend>条件搜索</legend>
+        <form class="layui-form layui-form-pane form-search">
+            <div class="layui-form-item layui-inline">
+                <label class="layui-form-label">订单号</label>
+                <div class="layui-input-inline">
+                    <input name="order_number" id="order_number" value="{$Think.get.order_number|default=''}" placeholder="请输入订单号"
+                           class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-inline">
+                <button class="layui-btn" id="search" type="button"><i class="layui-icon">&#xe615;</i>搜索</button>
+                <button class="layui-btn" id="all" data-type="reload" onclick="location.reload()">显示全部</button>
+            </div>
+        </form>
+    </fieldset>
+    <table class="layui-table" id="list" lay-filter="list"></table>
+</div>
+{/block}
+{block name="script"}
+<script>form.render()</script>
+<script type="text/html" id="topBtn">
+    <button type="button" class="layui-btn layui-btn-danger layui-btn-sm" id="delAll">批量删除</button>
+</script>
+<script type="text/html" id="action">
+    <button data-modal='{:url("add")}?id={{d.id}}' data-title="查看" class='layui-btn layui-btn-xs'>查看</button>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<script type="text/html" id="time">
+    <input readonly class=" layui-input" value="{{d.date}}" size="10"
+           style="height: 25px;line-height: 25px;"/>
+</script>
+
+<script>
+    layui.config({
+        base: "__ROOT__/static/plugs/layui/lay/mymodules/"
+    }).use(['table', 'eleTree', 'form'], function () {
+        var table = layui.table, form = layui.form, $ = layui.jquery;
+        var eleTree = layui.eleTree;
+        var tableIn = table.render({
+            id: 'coach',
+            elem: '#list',
+            url: '{:url("getList")}',
+            method: 'post',
+            toolbar: '#topBtn',
+            page: true,
+            cols: [[
+                {checkbox: true, fixed: true},
+                {field: 'id', align: 'center', title: '编号ID', width: 80, fixed: true},
+                {field: 'uid', align: 'center', title: '用户名称', width: 120},
+                {field: 'course_id', align: 'center', title: '课程名称', width: 120},
+                {field: 'vouchers_id', align: 'center', title: '代金券', width: 100},
+                {field: 'order_number', align: 'center', title: '订单号', width: 120},
+                {field: 'people_number', align: 'center', title: '预约人数', width: 120},
+                {field: 'node_number', align: 'center', title: '课程节数', width: 100},
+                {field: 'original_price', align: 'center', title: '原价', width: 100},
+                {field: 'member_price', align: 'center', title: '会员价', width: 120},
+                {field: 'date', align: 'center', title: '日期', width: 160, templet: '#time'},
+                {field: 'pay_status', align: 'center', title: '支付状态', width: 100},
+                {width: 120, title: '操作', align: 'center', toolbar: '#action', fixed: "right"},
+            ]],
+            limit: 10 //每页默认显示的数量
+        });
+        //搜索
+        $('#search').on('click', function () {
+            var order_number = $('#order_number').val();
+            tableIn.reload({
+                where: {
+                    order_number: order_number,
+                }
+            });
+        });
+        table.on('tool(list)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'del') {
+                layer.confirm('您确定要删除该记录吗？', function (index) {
+                    var loading = layer.load(1, {shade: [0.1, '#fff']});
+                    var ids = [];
+                    ids.push(data.id)
+                    $.post("{:url('delete')}", {id: ids}, function (res) {
+                        layer.close(loading);
+                        if (res.status == 'success') {
+                            layer.msg(res.msg, {time: 1000, icon: 1});
+                            tableIn.reload();
+                        } else {
+                            layer.msg('操作失败！', {time: 1000, icon: 2});
+                        }
+                    });
+                    layer.close(index);
+                });
+            } else if (obj.event === 'images') {
+                $.post("{:url('getImages')}", {id: data.id}, function (result) {
+                    layer.photos({
+                        photos: result //格式见API文档手册页
+                        , anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机
+                    });
+                })
+            }
+        });
+        $('body').on('click', '#delAll', function () {
+            layer.confirm('确认要删除选中信息吗？', {icon: 3}, function (index) {
+                layer.close(index);
+                var checkStatus = table.checkStatus('coach'); //topnews即为参数id设定的值
+                var ids = [];
+                $(checkStatus.data).each(function (i, o) {
+                    ids.push(o.id);
+                });
+                var loading = layer.load(1, {shade: [0.1, '#fff']});
+                $.post("{:url('delete')}", {id: ids}, function (data) {
+                    layer.close(loading);
+                    if (data.status == 'success') {
+                        layer.msg(data.msg, {time: 1000, icon: 1});
+                        tableIn.reload();
+                    } else {
+                        layer.msg(data.errmsg, {time: 1000, icon: 2});
+                    }
+                });
+            });
+        })
+        var mode1;
+        $("[name='mode_title1']").on("click", function (e) {
+            e.stopPropagation();
+            if (!mode1) {
+                mode1 = eleTree.render({
+                    elem: '.mode1',
+                    url: "{:url('category/getCategoryTreeList')}?pid=20",
+                    defaultExpandAll: true,
+                    expandOnClickNode: false,
+                    highlightCurrent: true
+                });
+            }
+            $(".mode1").toggle();
+        })
+        eleTree.on("nodeClick(data3)", function (d) {
+            $("[name='mode_title1']").val(d.data.currentData.label)
+            $("[name='modeid']").val(d.data.currentData.id)
+            $(".mode1").hide();
+        })
+        $(document).on("click", function () {
+            $(".mode1").hide();
+        })
+        var cate1;
+        $("[name='cate_title1']").on("click", function (e) {
+            e.stopPropagation();
+            if (!cate1) {
+                cate1 = eleTree.render({
+                    elem: '.cate1',
+                    url: "{:url('category/getCategoryTreeList')}?pid=21",
+                    defaultExpandAll: true,
+                    expandOnClickNode: false,
+                    highlightCurrent: true
+                });
+            }
+            $(".cate1").toggle();
+        })
+        eleTree.on("nodeClick(data4)", function (d) {
+            $("[name='cate_title1']").val(d.data.currentData.label)
+            $("[name='cateid']").val(d.data.currentData.id)
+            $(".cate1").hide();
+        })
+        $(document).on("click", function () {
+            $(".cate1").hide();
+        })
+    });
+</script>
+{/block}

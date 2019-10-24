@@ -1,0 +1,35 @@
+<div class="admin-main layui-anim layui-anim-upbit">
+    <div class="demoTable">
+        <div class="layui-inline">
+            <input class="layui-input" name="key" id="key" placeholder="{:lang('pleaseEnter')}标题关键字">
+        </div>
+        <div class="layui-inline">
+            <input class="layui-input" id="article_id" autocomplete="off" placeholder="文章ID">
+        </div>
+        <div class="layui-inline">
+            <input class="layui-input" id="uid" autocomplete="off" placeholder="发表人ID">
+        </div>
+        <div class="layui-inline">
+            <select class="layui-input" id="status">
+                <option value="">设置状态查询</option>
+                <option value="unaudited_pass">未审核</option>
+                <option value="pass">审核通过</option>
+                <option value="no_pass">审核未通过</option>
+                <option value="banner">banner图</option>
+                <option value="right">右侧边栏</option>
+                <option value="hot">热门文章</option>
+                <option value="recommend">热门推荐</option>
+            </select>
+        </div>
+        <div class="layui-inline">
+            <input class="layui-input" id="starttime" autocomplete="off" placeholder="起始时间">
+        </div>
+        <div class="layui-inline">
+            <input class="layui-input" id="endtime" autocomplete="off" placeholder="结束时间">
+        </div>
+        <button  class="layui-btn" id="search" data-type="reload">搜索</button>
+        <a href="{:url('index')}" class="layui-btn">显示全部</a>
+
+    </div>
+    <table class="layui-table" id="list" lay-filter="list"></table>
+</div>

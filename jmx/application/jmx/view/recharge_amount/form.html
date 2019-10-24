@@ -1,0 +1,47 @@
+<form class="layui-form layui-card">
+    <input type="hidden" name="id" value="{$data.id ?? ''}">
+    <div class="layui-card-body">
+        <div class="layui-form-item">
+            <label class="layui-form-label label-required-next">充值金额</label>
+            <div class="layui-input-block">
+                <input type="text" name="recharge_price" lay-verify="required|number" autocomplete="off"
+                       placeholder="请输入充值金额"
+                       class="layui-input" value="{$data.recharge_price}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">赠送金额</label>
+            <div class="layui-input-block">
+                <input type="text" name="give_price" autocomplete="off"
+                       placeholder="请输入赠送金额"
+                       class="layui-input" value="{$data.give_price}">
+            </div>
+        </div>
+    </div>
+    <div class="hr-line-dashed"></div>
+    <div class="layui-form-item text-center">
+        <button class="layui-btn" type='button' lay-submit="" lay-filter="submit">保存数据</button>
+        <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定要取消编辑吗？" data-close>取消编辑</button>
+    </div>
+    <script>window.form.render();</script>
+</form>
+<script>
+    layui.use(['form', 'layer'], function () {
+        var form = layui.form
+            , layer = layui.layer;
+        form.on('submit(submit)', function (data) {
+            var loading = layer.load(1, {shade: [0.1, '#fff']});
+            $.post("{:url('edit')}", data.field, function (res) {
+                layer.close(loading);
+                if (res.status == 'success') {
+                    layer.msg(res.msg, {time: 1800, icon: 1}, function () {
+                        //关闭当前frame
+                        location.reload()
+                    });
+                } else {
+                    layer.msg(res.msg, {time: 1800, icon: 2});
+                }
+            });
+        });
+    });
+</script>
