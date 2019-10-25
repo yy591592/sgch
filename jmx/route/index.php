@@ -57,32 +57,3 @@ Route::rule("notify", "index/wxpay/notify")->allowCrossDomain()->middleware(["Au
 
 
 
-
-Route::rule("act_detail", "index/activity/detail")->allowCrossDomain();  //活动详情接口 参数传id
-
-
-Route::rule("user_detail", "index/user/detail")->allowCrossDomain();   //获取用户个人信息接口=>参数：用户登录凭证
-Route::rule("course_video", "index/course/video")->allowCrossDomain();   //课程主页视频
-Route::rule("course_list", "index/course/index")->allowCrossDomain();   //课程列表接口=>参数：week(日期),modeid训练模式，cateid训练类型，coach_id教练，timesid时段，price=1免费课程
-Route::rule("course_detail", "index/course/detail")->allowCrossDomain();   //课程详情接口=>参数：id(课程ID)
-Route::rule("coach_detail", "index/coach/detail")->allowCrossDomain();   //教练详情接口=>参数：id(教练ID)
-Route::rule("wxpay", "index/wxpay/pay")->allowCrossDomain()->middleware(["Auth"]);//微信支付接口
-
-Route::rule("course_order_list", "index/course_order/index")->allowCrossDomain();//用户预约课程列表=>参数：用户登录凭证
-Route::rule("course_order_detail", "index/course_order/detail")->allowCrossDomain();//用户预约课程订单详情=>参数：id(订单ID)
-Route::rule("category_list", "index/category/index")->allowCrossDomain();//类型列表接口=>参数：pid(类型父ID)
-Route::rule("category_list_timeslot", "index/category/timeslot")->allowCrossDomain();//时段课程列表接口
-Route::rule("user_train_list", "index/user_train/index")->allowCrossDomain();//用户排行列表接口
-
-Route::rule("card", "index/card/index")->allowCrossDomain();//健身卡列表接口
-
-Route::rule("course_evaluate_list", "index/course_evaluate/index")->allowCrossDomain();//课程评价接口=>参数：course_id(课程ID)
-Route::rule("course_evaluate_add", "index/course_evaluate/add")->allowCrossDomain();//课程评价接口=>参数：course_id(课程ID),content（评价内容）
-Route::rule("like", "index/course_evaluate/like")->allowCrossDomain();//课程评价点赞接口=>参数：id(评论ID)
-
-
-Route::rule("order", "index/course/order")->allowCrossDomain();//订单生成接口
-
-
-
-
